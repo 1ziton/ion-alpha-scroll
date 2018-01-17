@@ -103,6 +103,10 @@ export class HomePage {
 
 ```
 
+## Other
+
+https://stackoverflow.com/questions/39094000/cannot-find-name-hammermanager
+
 ## License
 
 MIT © [chenyuan](mailto:chenyuanchn@foxmail.com)

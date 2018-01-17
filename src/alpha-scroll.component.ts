@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+
 import {
     Component,
     ElementRef,
@@ -7,14 +8,15 @@ import {
     OnChanges,
     OnDestroy,
     OnInit,
-    TemplateRef
+    TemplateRef,
+    AfterViewInit
 } from '@angular/core';
-import {Content} from 'ionic-angular';
-import {OrderBy} from './order-by';
-import {AlphaScrollService} from './alpha-scroll.service';
+import { Content } from 'ionic-angular';
+import { OrderBy } from './order-by';
+import { AlphaScrollService } from './alpha-scroll.service';
 
 const ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
+/*tslint:disable*/
 @Component({
     selector: 'ion-alpha-scroll',
     template: `
@@ -36,7 +38,6 @@ const ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             </li>
         </ul>
     `,
-    styleUrls: ['alpha-scroll.component.scss']
 })
 export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
     @Input() listData: any;
@@ -51,7 +52,7 @@ export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
     alphabet: any = [];
 
     constructor(private elementRef: ElementRef, private orderBy: OrderBy,
-                private alphaScrollService: AlphaScrollService, @Host() private content: Content) {
+        private alphaScrollService: AlphaScrollService, @Host() private content: Content) {
         this.letterIndicatorEle = document.createElement('div');
         this.letterIndicatorEle.className = 'ion-alpha-letter-indicatorc';
         let body = document.getElementsByTagName('body')[0];
@@ -67,16 +68,15 @@ export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnChanges() {
-        console.log('ngOnChanges')
         let sortedListData: Array<any> = this.orderBy.transform(this.listData, [this.key]);
         let groupItems: any = _.groupBy(sortedListData, item => {
             let letter: any = _.get(item, this.key);
-            console.log('letter:' + letter);
+            // console.log('letter:' + letter);
             let tmp = this.alphaScrollService.toPinyin(letter.substr(0, 1));
             if (tmp !== 'undefined') {
                 letter = tmp;
             }
-            console.log('letter2:' + letter);
+            // console.log('letter2:' + letter);
             return letter.toUpperCase().charAt(0);
         });
         const iteratedObj = this.iterateAlphabet(groupItems);
@@ -119,7 +119,7 @@ export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
 
         this.hammer = new Hammer(sidebarEle, {
             recognizers: [
-                [Hammer.Pan, {direction: Hammer.DIRECTION_VERTICAL}],
+                [Hammer.Pan, { direction: Hammer.DIRECTION_VERTICAL }],
             ]
         });
 
@@ -147,11 +147,11 @@ export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     private iterateAlphabet(groupItems: any): { alphabets: Array<any>, sortedItems: Array<any> } {
-        let result = {alphabets: [], sortedItems: []};
+        let result = { alphabets: [], sortedItems: [] };
         for (let i = 0; i < ALPHABETS.length; i++) {
             const letter = ALPHABETS.charAt(i);
             const isActive = groupItems[letter] ? true : false;
-            result.alphabets.push({letter: letter, isActive: isActive});
+            result.alphabets.push({ letter: letter, isActive: isActive });
 
             if (!isActive) continue;
 
@@ -161,7 +161,7 @@ export class AlphaScrollComponent implements OnInit, OnChanges, OnDestroy {
             }].concat(groupItems[letter]));
         }
 
-        let otherItems = [{isDivider: true, letter: '其它'}];
+        let otherItems = [{ isDivider: true, letter: '其它' }];
         for (let letter in groupItems) {
             if (ALPHABETS.indexOf(letter) !== -1) continue;
             otherItems = otherItems.concat(groupItems[letter]);
